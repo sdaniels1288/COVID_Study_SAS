@@ -7,58 +7,58 @@ Email: sdaniels1288@gmail.com
 OPTIONS VALIDVARNAME=V7;
 
 * Declaring libname and filenames. Datafiles renamed for ease of use. "County Name" field was renamed in source to "county_name".;
-libname BAS150GP "/home/u63025276/myfolders/group_project";
+libname COVID19 "data_projects/covid_19";
 
-filename cases "/home/u63025276/myfolders/group_project/covid_cases.xlsx";
-filename deaths "/home/u63025276/myfolders/group_project/covid_deaths.xlsx";
+filename cases "data_projects/covid_19/covid_cases.xlsx";
+filename deaths "data_projects/covid_19/covid_deaths.xlsx";
 
 * Step 1 - Import Excel files into created library;
 proc import datafile=cases
 	dbms=xlsx
-	out=BAS150GP.cases
+	out=COVID19.cases
 	replace;
 	getnames=yes;
 run;
 
 proc import datafile=deaths
 	dbms=xlsx
-	out=BAS150GP.deaths
+	out=COVID19.deaths
 	replace;
 	getnames=yes;
 run;
 
 * Step 2 - Data cleaning;
 proc sql;
-	CREATE TABLE BAS150GP.cleaned_cases AS
+	CREATE TABLE COVID19.cleaned_cases AS
 	SELECT *
-	FROM BAS150GP.cases
+	FROM COVID19.cases
 	WHERE county_name <> "Statewide Unallocated";
 
-	CREATE TABLE BAS150GP.cleaned_deaths AS
+	CREATE TABLE COVID19.cleaned_deaths AS
 	SELECT *
-	FROM BAS150GP.deaths
+	FROM COVID19.deaths
 	WHERE county_name <> "Statewide Unallocated";
 quit;
 
 
 title "Frequency of Cases by County (3/1/2020)";
-proc freq data=BAS150GP.cleaned_cases;
+proc freq data=COVID19.cleaned_cases;
 	tables as_of_3_1_2020;
 	label as_of_3_1_2020 = "Cases as of 3/1/2020";
 run;
 
 title "Frequency of Deaths by County (3/1/2020)";
-proc freq data=BAS150GP.cleaned_deaths;
+proc freq data=COVID19.cleaned_deaths;
 	tables as_of_3_1_2020;
 	label as_of_3_1_2020 = "Deaths as of 3/1/2020";
 run;
 
-proc sort data=BAS150GP.cleaned_cases;
+proc sort data=COVID19.cleaned_cases;
 	by descending as_of_3_1_2020;
 run;
 
 title "Top Cases by County";
-proc print data=BAS150GP.cleaned_cases(obs=3) label noobs;
+proc print data=COVID19.cleaned_cases(obs=3) label noobs;
 	label county_name="County";
 	label as_of_3_1_2020="Cases as of 03/01/2020";
 	var county_name as_of_3_1_2020;
@@ -66,37 +66,37 @@ run;
 
 /* Additional SQL code to pull CA case and death counts
 proc sql;
-	CREATE TABLE BAS150GP.cases_by_state AS
+	CREATE TABLE COVID19.cases_by_state AS
 	SELECT state, SUM(as_of_3_1_2020) AS mar_cases
-	FROM BAS150GP.cleaned_cases
+	FROM COVID19.cleaned_cases
 	GROUP BY state
 	ORDER BY mar_cases DESC;
 	
-	CREATE TABLE BAS150GP.deaths_by_state AS
+	CREATE TABLE COVID19.deaths_by_state AS
 	SELECT state, SUM(as_of_3_1_2020) AS mar_deaths
-	FROM BAS150GP.cleaned_deaths
+	FROM COVID19.cleaned_deaths
 	GROUP BY state
 	ORDER BY mar_deaths DESC;
 
 	SELECT SUM(as_of_3_1_2020) AS total_cases
-	FROM BAS150GP.cleaned_cases;
+	FROM COVID19.cleaned_cases;
 	
 	SELECT SUM(as_of_3_1_2020) as CA_cases
-	FROM BAS150GP.cleaned_cases
+	FROM COVID19.cleaned_cases
 	WHERE state="CA";
 	
 	SELECT SUM(as_of_3_1_2020) as total_deaths
-	FROM BAS150GP.cleaned_deaths;
+	FROM COVID19.cleaned_deaths;
 	
 	SELECT SUM(as_of_3_1_2020) as CA_deaths
-	FROM BAS150GP.cleaned_deaths
+	FROM COVID19.cleaned_deaths
 	WHERE state="CA";
 quit;
 
 title "Top 5 Counties in CA";
 proc sql outobs=5;
 	SELECT county_name, (as_of_3_1_2020)/SUM(as_of_3_1_2020) AS case_pct
-	FROM BAS150GP.cleaned_cases
+	FROM COVID19.cleaned_cases
 	WHERE state="CA"
 	ORDER BY case_pct DESC;
 quit;

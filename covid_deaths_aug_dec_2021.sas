@@ -7,20 +7,20 @@ Email: sdaniels1288@gmail.com
 OPTIONS VALIDVARNAME=V7;
 
 * Declaring libname and filenames. Datafiles renamed for ease of use. "County Name" field was renamed in source to "county_name".;
-libname BAS150GP "/home/u63025276/myfolders/group_project";
+libname COVID19 "data_projects/covid_19";
 
-filename deaths "/home/u63025276/myfolders/group_project/covid_deaths.xlsx";
+filename deaths "data_projects/covid_19/covid_deaths.xlsx";
 
 * Step 1 - Import Excel file into created library;
 proc import datafile=deaths
 	dbms=xlsx
-	out=BAS150GP.deaths
+	out=COVID19.deaths
 	replace;
 	getnames=yes;
 run;
 
 data covid;
-    set BAS150.covid;
+    set COVID19.covid;
     where county_name NE "Statewide Unallocated";
     aug_deaths_2021 = "As_of_8/31/2021"n - "As_of_7/31/2021"n;
     sep_deaths_2021 = "As_of_9/30/2021"n - "As_of_8/31/2021"n;
