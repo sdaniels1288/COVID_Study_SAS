@@ -1,5 +1,7 @@
 # A CASE STUDY ON COVID-10 CASES AND DEATHS
 
+[View PDF Version (recommended)](https://github.com/sdaniels1288/COVID_Study_SAS/blob/main/report.pdf)
+
 ## COVID-19 Cases and Deaths (as of 01 Mar 2020 and 31 Mar 2020)
 
 Looking at the CDC datasets on COVID-19 cases and deaths, I initially cleaned the data by removing observations for each state that were not allocated to a specific county (listed as "Statewide Unallocated" in the data). This removed 52 observations and left a total of 3,142 observations. Using a frequency table of case counts by county, I found that as of 3/1/2020, 3102 counties (98.73%) had zero cases reported. The maximum case count was 130 cases, found in one county (Los Angeles Co., CA). This represents 0.03% of all counties observed. In terms of deaths, as of 3/31/2020, there were 3,139 counties with zero deaths (99.9%). The maximum number of deaths (2) occurred in Santa Clara Co., CA. This represented 0.03% of all observations. 
